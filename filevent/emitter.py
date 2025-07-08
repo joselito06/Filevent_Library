@@ -5,6 +5,7 @@ import socket
 from datetime import datetime
 from .models import Event
 
+# tamo` probando.
 
 def emitter_event(base_path: str, type_event: str, detail: str, vm_name: str = None, user: str = None):
     vm_name = vm_name or socket.gethostname()
