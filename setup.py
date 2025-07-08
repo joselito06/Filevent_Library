@@ -1,11 +1,13 @@
 from setuptools import setup, find_packages
 
+readme = open("./README.md", "r")
+
 setup(
-    name="fileevent",
+    name="filevent",
     version="0.1.0",
     description="Librería para emisión y recepción de eventos usando archivos organizados por VM y usuario.",
     author="Joselito Beriguete",
-    author_email="tunombre@ejemplo.com",
+    author_email="joselito0125@gmail.com",
     packages=find_packages(),
     install_requires=[
         "watchdog"
@@ -16,4 +18,6 @@ setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.7',
+    url='https://github.com/joselito06/Filevent_Library'
+
 )
