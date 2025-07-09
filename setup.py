@@ -17,7 +17,5 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.7',
-    url='https://github.com/joselito06/Filevent_Library'
-
+    python_requires='>=3.7'
 )
