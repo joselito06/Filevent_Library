@@ -5,7 +5,7 @@ def test_listener_starts_and_handles_event(tmp_path):
     # Se simula una ruta con eventos
     #ruta_prueba = tmp_path
     ruta_prueba = os.path.join(os.path.dirname(__file__), 'ruta_servidor')
-    ruta_prueba.mkdir(parents=True, exist_ok=True)
+    #ruta_prueba.mkdir(parents=True, exist_ok=True)
 
     eventos_detectados = []
 
