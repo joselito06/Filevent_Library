@@ -1,5 +1,7 @@
 from setuptools import setup, find_packages
 
+readme = open("./README.md", "r")
+
 setup(
     name="filevent",
     version="0.1.0",
@@ -16,4 +18,3 @@ setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.7'
-)
