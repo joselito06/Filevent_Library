@@ -1,6 +1,6 @@
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-import json, time, os, socket
+import json, time, os, socket, threading
 
 class EventHandler(FileSystemEventHandler):
     def __init__(self, on_events):
@@ -25,7 +25,7 @@ class EventHandler(FileSystemEventHandler):
             print(f"[ERROR] Procesando {event.src_path}: {e}")
 
 
-def start_listening(path: str, on_events, vm_name: str = None):
+def start_listening(path: str, on_events, vm_name: str = None, timeout: int = None):
     vm_name = vm_name or socket.gethostname()
     path_vm = os.path.join(path, vm_name)
 
@@ -37,9 +37,19 @@ def start_listening(path: str, on_events, vm_name: str = None):
     observer.start()
     print(f"[LISTENER] Escuchando en: {path_vm}")
 
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        observer.stop()
-    observer.join()
+    if timeout is None:
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            observer.stop()
+        observer.join()
+    else:
+        def stop_observer():
+            observer.stop()
+
+        timer = threading.Timer(timeout, stop_observer)
+        timer.start()
+
+        observer.join()
+        timer.cancel()

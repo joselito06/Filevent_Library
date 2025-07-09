@@ -7,11 +7,45 @@ from .models import Event
 
 # tamo` probando.
 
-def emitter_event(base_path: str, type_event: str, detail: str, vm_name: str = None, user: str = None):
-    vm_name = vm_name or socket.gethostname()
-    user = user or getpass.getuser()
+def emitter_event(base_path: str, type_event: str, detail: str, vm_names, user: str):
+    #Validate if vm_name is a list
+    if isinstance(vm_names, str):
+        vm_names = [vm_names]
 
-    now = datetime.now()
+    timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
+    event_data = {
+        "timestamp": timestamp,
+        "type_event": type_event,
+        "detail": detail,
+        "user": user
+    }
+
+    paths = []
+    for vm in vm_names:
+        event_dir = os.path.join(base_path, vm, user)
+        os.makedirs(event_dir, exist_ok=True)
+
+        file_date = datetime.now().strftime("Evento-%d-%m-%Y.json")
+        file_path = os.path.join(event_dir, file_date)
+
+        events = []
+        if os.path.exists(file_path):
+            try:
+                with open(file_path, "r", encoding="utf-8") as f:
+                    events = json.load(f)
+            except Exception as e:
+                print(f"[WARN] No se pudo leer {file_path}: {e}")
+
+        events.append(event_data)
+
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(events, f, indent=4, ensure_ascii=False)
+
+        paths.append(file_path)
+
+    return paths  # Devuelve lista de rutas creadas
+
+    """now = datetime.now()
     file_date = now.strftime("Evento-%d-%m-%Y.json")
     destination_folder = os.path.join(base_path, vm_name, user)
     os.makedirs(destination_folder, exist_ok=True)
@@ -38,4 +72,4 @@ def emitter_event(base_path: str, type_event: str, detail: str, vm_name: str = N
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
 
-    return file_path
+    return file_path"""
