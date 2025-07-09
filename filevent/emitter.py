@@ -17,7 +17,8 @@ def emitter_event(base_path: str, type_event: str, detail: str, vm_names, user: 
         "timestamp": timestamp,
         "type_event": type_event,
         "detail": detail,
-        "user": user
+        "user": user,
+        "read": False
     }
 
     paths = []

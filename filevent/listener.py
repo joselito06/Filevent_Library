@@ -1,5 +1,6 @@
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+from filevent.models import Event
 import json, time, os, socket, threading
 
 class EventHandler(FileSystemEventHandler):
@@ -19,8 +20,21 @@ class EventHandler(FileSystemEventHandler):
             self.last_state[event.src_path] = mod_time
 
             with open(event.src_path, "r", encoding="utf-8") as f:
-                events = json.load(f)
-                self.on_events(event.src_path, events)
+                events = [Event.from_dict(e) for e in json.load(f)]
+
+            unread_events = [e for e in events if not e.read]
+
+            if unread_events:
+                self.on_events(event.src_path, [e.to_dict() for e in unread_events])
+
+                # Mark as read
+                for e in events:
+                    if not e.read:
+                        e.read = True
+
+                with open(event.src_path, "w", encoding="utf-8") as f:
+                    json.dump([e.to_dict() for e in events], f, indent=4, ensure_ascii=False)
+
         except Exception as e:
             print(f"[ERROR] Procesando {event.src_path}: {e}")
 

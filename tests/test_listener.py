@@ -5,7 +5,6 @@ def test_listener_starts_and_handles_event(tmp_path):
     # Se simula una ruta con eventos
     #ruta_prueba = tmp_path
     ruta_prueba = os.path.join(os.path.dirname(__file__), 'ruta_servidor')
-    #ruta_prueba.mkdir(parents=True, exist_ok=True)
 
     eventos_detectados = []
 
@@ -16,7 +15,7 @@ def test_listener_starts_and_handles_event(tmp_path):
             print(f"🕒 [{event['timestamp']}] {event['user']} - {event['type_event']}: {event['detail']}")
 
     # Se inicia el listener en una carpeta vacía (no bloquea, escucha)
-    start_listening(str(ruta_prueba), handle_events, "VM-004", timeout=3)
+    start_listening(str(ruta_prueba), handle_events, "VM-004", timeout=2)
 
     # El test en realidad debería simular un evento también...
     # Por ahora solo validamos que no crashee
