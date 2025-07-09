@@ -12,7 +12,7 @@ def test_listener_starts_and_handles_event(tmp_path):
         eventos_detectados.extend(events)
 
     # Se inicia el listener en una carpeta vacía (no bloquea, escucha)
-    start_listening(str(ruta_prueba), handle_events, "VM-003")
+    start_listening(str(ruta_prueba), handle_events, "VM-003", timeout=3)
 
     # El test en realidad debería simular un evento también...
     # Por ahora solo validamos que no crashee
