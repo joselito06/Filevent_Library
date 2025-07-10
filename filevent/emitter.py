@@ -7,7 +7,7 @@ from .models import Event
 
 # tamo` probando.
 
-def emitter_event(base_path: str, type_event: str, detail: str, vm_names, user: str):
+def emitter_event(base_path: str, type_event: str, detail: str, vm_names, user: str, source_id: str, target_element: str):
     #Validate if vm_name is a list
     if isinstance(vm_names, str):
         vm_names = [vm_names]
@@ -18,6 +18,8 @@ def emitter_event(base_path: str, type_event: str, detail: str, vm_names, user: 
         "type_event": type_event,
         "detail": detail,
         "user": user,
+        "source_id": source_id,
+        "target_element": target_element,
         "read": False
     }
 
@@ -34,6 +36,18 @@ def emitter_event(base_path: str, type_event: str, detail: str, vm_names, user: 
             try:
                 with open(file_path, "r", encoding="utf-8") as f:
                     events = json.load(f)
+
+                for ev in events:
+                    if(
+                        ev["type_event"] == event_data["type_event"] and
+                        ev["user"] == event_data["user"] and
+                        ev["source_id"] == event_data["source_id"] and
+                        ev["target_element"] == event_data["target_element"] and
+                        not ev["read"]
+                    ):
+                        print("[INFO] Evento ya existe y no ha sido leído. No se volverá a agregar.")
+                        return paths  # Salimos sin agregar el evento
+                    
             except Exception as e:
                 print(f"[WARN] No se pudo leer {file_path}: {e}")
 

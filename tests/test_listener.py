@@ -3,8 +3,8 @@ import os
 
 def test_listener_starts_and_handles_event(tmp_path):
     # Se simula una ruta con eventos
-    #ruta_prueba = tmp_path
-    ruta_prueba = os.path.join(os.path.dirname(__file__), 'ruta_servidor')
+    ruta_prueba = tmp_path
+    #ruta_prueba = os.path.join(os.path.dirname(__file__), 'ruta_servidor')
 
     eventos_detectados = []
 
@@ -15,18 +15,18 @@ def test_listener_starts_and_handles_event(tmp_path):
             print(f"🕒 [{event['timestamp']}] {event['user']} - {event['type_event']}: {event['detail']}")
 
     # Se inicia el listener en una carpeta vacía (no bloquea, escucha)
-    start_listening(str(ruta_prueba), handle_events, "VM-004", timeout=2)
+    start_listening(str(ruta_prueba), handle_events, "VM-004")
 
     # El test en realidad debería simular un evento también...
     # Por ahora solo validamos que no crashee
     assert callable(handle_events)
 
-"""if __name__ == "__main__":
+if __name__ == "__main__":
     ruta_servidor = os.path.join(os.path.dirname(__file__), 'ruta_servidor')
     test_listener_starts_and_handles_event(ruta_servidor)
     print("✅ Test ejecutado manualmente con éxito.")
 
-def handle_events(path, events):
+"""def handle_events(path, events):
     print(f"📥 Cambios detectados en: {path}")
     for event in events:
         print(f"🕒 [{event['timestamp']}] {event['user']} - {event['type_event']}: {event['detail']}")
