@@ -1,7 +1,7 @@
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from filevent.models import Event
-import json, time, os, socket, threading
+import json, time, os, socket, glob, threading
 
 class EventHandler(FileSystemEventHandler):
     def __init__(self, on_events):
@@ -39,11 +39,31 @@ class EventHandler(FileSystemEventHandler):
             print(f"[ERROR] Procesando {event.src_path}: {e}")
 
 
-def start_listening(path: str, on_events, vm_name: str = None, timeout: int = None):
+def start_listening(path: str, on_events, vm_name: str = None, timeout: int = None, process_unread_on_start: bool = False):
     vm_name = vm_name or socket.gethostname()
     path_vm = os.path.join(path, vm_name)
 
     os.makedirs(path_vm, exist_ok=True)
+
+    if process_unread_on_start:
+        print("[INFO] Procesando eventos no leídos existentes...")
+        for json_file in glob.glob(os.path.join(path_vm, "**/*.json"), recursive=True):
+            try:
+                with open(json_file, "r", encoding="utf-8") as f:
+                    all_events = [Event.from_dict(e) for e in json.load(f)]
+
+                unread_events = [e for e in all_events if not e.read]
+                if unread_events:
+                    on_events(json_file, [e.to_dict() for e in unread_events])
+                    for e in all_events:
+                        if not e.read:
+                            e.read = True
+                    with open(json_file, "w", encoding="utf-8") as f:
+                        json.dump([e.to_dict() for e in all_events], f, indent=4, ensure_ascii=False)
+            except Exception as e:
+                print(f"[WARN] No se pudo procesar {json_file}: {e}")
+
+
     event_handler = EventHandler(on_events)
 
     observer = Observer()
