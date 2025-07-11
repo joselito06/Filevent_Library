@@ -1,0 +1,20 @@
+# Ignore archivos de empaquetado
+build/
+dist/
+*.egg-info/
+
+# Ignore archivos temporales de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# VSCode
+.vscode/
+
+# Entornos virtuales
+venv/
+.env/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
